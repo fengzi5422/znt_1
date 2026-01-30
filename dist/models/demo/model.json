@@ -1,0 +1,49 @@
+{
+    "Version": 3,
+    "FileReferences": {
+        "Moc": "model.moc3",
+        "Textures": [
+            "texture_00.png"
+        ],
+        "Physics": "physics.json",
+        "Motions": {
+            "idle": [
+                {
+                    "File": "motions/idle.motion3.json"
+                }
+            ],
+            "speak": [
+                {
+                    "File": "motions/speak.motion3.json"
+                }
+            ]
+        },
+        "Expressions": [
+            {
+                "Name": "normal",
+                "File": "expressions/normal.exp3.json"
+            },
+            {
+                "Name": "happy",
+                "File": "expressions/happy.exp3.json"
+            }
+        ]
+    },
+    "Groups": [
+        {
+            "Target": "Parameter",
+            "Name": "LipSync",
+            "Ids": [
+                "ParamMouthOpenY"
+            ]
+        },
+        {
+            "Target": "Parameter",
+            "Name": "EyeBlink",
+            "Ids": [
+                "ParamEyeLOpen",
+                "ParamEyeROpen"
+            ]
+        }
+    ]
+}

@@ -1,0 +1,155 @@
+/* AI 虚拟助手 - 全局样式 */
+
+:root {
+  /* 色彩系统 */
+  --primary-hue: 250;
+  --primary-color: hsl(var(--primary-hue), 70%, 55%);
+  --primary-dark: hsl(var(--primary-hue), 70%, 40%);
+  --primary-light: hsl(var(--primary-hue), 70%, 70%);
+  
+  --bg-primary: hsl(230, 25%, 8%);
+  --bg-secondary: hsl(230, 20%, 12%);
+  --bg-tertiary: hsl(230, 15%, 18%);
+  --bg-glass: hsla(230, 20%, 15%, 0.8);
+  
+  --text-primary: hsl(0, 0%, 95%);
+  --text-secondary: hsl(0, 0%, 70%);
+  --text-muted: hsl(0, 0%, 50%);
+  
+  --border-color: hsla(0, 0%, 100%, 0.1);
+  --shadow-color: hsla(0, 0%, 0%, 0.3);
+  
+  /* 尺寸 */
+  --input-height: 48px;
+  --header-height: 60px;
+  --bottom-safe-area: env(safe-area-inset-bottom, 0px);
+  
+  /* 动画 */
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.3s ease;
+  --transition-slow: 0.5s ease;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  font-family: 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--text-muted);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+}
+
+/* 按钮重置 */
+button {
+  font-family: inherit;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: inherit;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* 输入框重置 */
+input, textarea {
+  font-family: inherit;
+  border: none;
+  outline: none;
+  background: none;
+  color: inherit;
+}
+
+/* 链接重置 */
+a {
+  color: var(--primary-light);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* 工具类 */
+.glass {
+  background: var(--bg-glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border-color);
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, var(--primary-light), var(--primary-color));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* 动画关键帧 */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { 
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+}
+
+/* 响应式断点 */
+@media (max-width: 768px) {
+  :root {
+    --input-height: 44px;
+    --header-height: 52px;
+  }
+}

@@ -1,0 +1,147 @@
+.app {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    /* 全屏背景图 */
+    background: url('/image1.png') center/cover no-repeat fixed;
+    transition: padding var(--transition-fast);
+}
+
+/* 启动引导页 */
+.start-overlay {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-primary);
+    z-index: 100;
+    animation: fadeIn var(--transition-normal);
+}
+
+.start-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 48px 40px;
+    border-radius: 24px;
+    text-align: center;
+    max-width: 320px;
+    animation: slideUp var(--transition-slow);
+}
+
+.start-logo {
+    font-size: 72px;
+    margin-bottom: 16px;
+    animation: breathe 3s ease-in-out infinite;
+}
+
+.start-content h1 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.start-content p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 32px;
+}
+
+.start-button {
+    width: 100%;
+    padding: 16px 32px;
+    font-size: 16px;
+    font-weight: 600;
+    color: white;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    border-radius: 12px;
+    transition: all var(--transition-fast);
+    box-shadow: 0 8px 24px hsla(var(--primary-hue), 70%, 40%, 0.3);
+}
+
+.start-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px hsla(var(--primary-hue), 70%, 40%, 0.4);
+}
+
+.start-button:active {
+    transform: translateY(0);
+}
+
+/* 主容器 */
+.main-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    opacity: 1;
+    transition: opacity var(--transition-normal);
+}
+
+.main-container.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Avatar 区域 */
+.avatar-section {
+    flex: 0 0 70%;
+    position: relative;
+    /* 移除背景色，使其完全透明 */
+    background: transparent;
+    transition: transform var(--transition-fast);
+}
+
+/* 对话区域 */
+.chat-section {
+    flex: 1;
+    /* 占据剩余空间 (30%) */
+    min-height: 0;
+    /* 允许压缩 */
+
+    /* 极致透明：移除背景色、边框和阴影 */
+    background: transparent;
+    border: none;
+    box-shadow: none;
+
+    /* 为了不让文字太难看清，可以加一点点底部的渐变遮罩，或者完全依靠气泡背景 */
+    /* 这里我们选择完全依靠气泡背景，给特定区域加遮罩不如直接让界面通透 */
+
+    overflow: hidden;
+    transition: transform var(--transition-fast);
+    /* 移除之前的圆角，因为没有背景了 */
+}
+
+/* 响应式 */
+@media (max-width: 768px) {
+    .avatar-section {
+        flex: 0 0 70%;
+    }
+
+    .chat-section {
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
+    }
+
+    .start-content {
+        margin: 16px;
+        padding: 32px 24px;
+    }
+
+    .start-logo {
+        font-size: 56px;
+    }
+
+    .start-content h1 {
+        font-size: 24px;
+    }
+}
+
+/* 横屏处理 */
+@media (orientation: landscape) and (max-height: 500px) {
+    .avatar-section {
+        flex: 0 0 30%;
+        min-height: 150px;
+    }
+}

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live2D Renderer</title>
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: transparent;
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+    </style>
+
+    <!-- Cubism SDK -->
+    <script src="./lib/live2d.min.js"></script>
+    <script src="./lib/live2dcubismcore.min.js"></script>
+
+    <!-- PixiJS v6.5.10 -->
+    <script src="https://cdn.jsdelivr.net/npm/pixi.js@6.5.10/dist/browser/pixi.min.js"></script>
+
+    <!-- pixi-live2d-display v0.4.0 -->
+    <script src="https://cdn.jsdelivr.net/npm/pixi-live2d-display@0.4.0/dist/index.min.js"></script>
+</head>
+
+<body>
+    <canvas id="canvas"></canvas>
+
+    <script>
+        // 强制修复 WebGL 1 兼容性
+        const getContext = HTMLCanvasElement.prototype.getContext;
+        HTMLCanvasElement.prototype.getContext = function (contextId, options) {
+            if (contextId === 'webgl2') return null;
+            const gl = getContext.call(this, contextId, options);
+            if (gl && (contextId === 'webgl' || contextId === 'experimental-webgl')) {
+                const originalGetParameter = gl.getParameter;
+                gl.getParameter = function (parameter) {
+                    // MAX_FRAGMENT_UNIFORM_VECTORS
+                    if (parameter === 0x8DF2) {
+                        const val = originalGetParameter.call(this, parameter);
+                        if (!val || val === 0) return 1024;
+                    }
+                    // MAX_VERTEX_UNIFORM_VECTORS
+                    if (parameter === 0x8DFB) {
+                        const val = originalGetParameter.call(this, parameter);
+                        if (!val || val === 0) return 1024;
+                    }
+                    return originalGetParameter.call(this, parameter);
+                };
+            }
+            return gl;
+        };
+
+        // 移除重复声明，直接使用全局 PIXI
+        // const PIXI = window.PIXI; 
+        const Live2DModel = PIXI.live2d.Live2DModel;
+
+        let app;
+        let model;
+
+        // 初始化 PIXI
+        function init() {
+            app = new PIXI.Application({
+                view: document.getElementById('canvas'),
+                autoStart: true,
+                resizeTo: window,
+                backgroundAlpha: 0,
+                antialias: false, // 禁用抗锯齿提高性能
+            });
+            console.log('Renderer initialized');
+        }
+
+        // 加载模型
+        async function loadModel(modelPath) {
+            try {
+                if (model) {
+                    app.stage.removeChild(model);
+                    model.destroy();
+                }
+
+                console.log('Loading model:', modelPath);
+                model = await Live2DModel.from(modelPath, {
+                    autoInteract: false, // 禁用自带的交互
+                });
+
+                // 自适应缩放和居中
+                const resize = () => {
+                    if (!model || !app) return;
+
+                    // 重置缩放以获取原始尺寸
+                    model.scale.set(1, 1);
+
+                    // 计算合适的缩放比例 (保持 80% 的屏幕占比)
+                    // Hiyori 模型比较高，所以主要基于高度适配
+                    const targetHeight = app.screen.height * 0.8;
+                    const scale = targetHeight / model.internalModel.height;
+
+                    // 限制最大和最小缩放
+                    const finalScale = Math.max(0.1, Math.min(scale, 1.5));
+
+                    model.scale.set(finalScale);
+
+                    // 居中定位
+                    model.x = app.screen.width / 2;
+                    model.y = app.screen.height * 0.5; // 垂直居中
+
+                    // 设置锚点为中心
+                    model.anchor.set(0.5, 0.5);
+                };
+
+                app.renderer.on('resize', resize);
+                resize();
+
+                app.stage.addChild(model);
+
+                // 播放待机动作
+                playMotion('Idle');
+
+                console.log('Model loaded');
+                window.parent.postMessage({ type: 'loaded' }, '*');
+            } catch (error) {
+                console.error('Failed to load model:', error);
+                window.parent.postMessage({ type: 'error', message: error.message }, '*');
+            }
+        }
+
+        // 播放动作
+        function playMotion(group) {
+            if (model) {
+                try {
+                    model.internalModel.motionManager.startMotion(group, 0, 2);
+                } catch (e) {
+                    console.warn('Motion not found:', group);
+                }
+            }
+        }
+
+        // 口型同步
+        function setMouthOpen(value) {
+            if (model && model.internalModel && model.internalModel.coreModel) {
+                try {
+                    model.internalModel.coreModel.setParameterValueById('ParamMouthOpenY', value);
+                } catch (e) {
+                    // Ignore
+                }
+            }
+        }
+
+        // 监听消息
+        window.addEventListener('message', async (event) => {
+            const { type, payload } = event.data;
+
+            switch (type) {
+                case 'init':
+                    if (!app) init();
+                    break;
+                case 'loadModel':
+                    loadModel(payload.path);
+                    break;
+                case 'motion':
+                    playMotion(payload.group);
+                    break;
+                case 'mouthOpen':
+                    setMouthOpen(payload.value);
+                    break;
+            }
+        });
+
+        // 通知父页面已就绪
+        window.parent.postMessage({ type: 'ready' }, '*');
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,95 @@
+/* Avatar 容器 */
+.avatar-container {
+    grid-area: avatar;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+/* iframe 样式 */
+.avatar-iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+}
+
+/* 占位符样式 */
+.avatar-placeholder {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    z-index: 10;
+    pointer-events: none;
+}
+
+.avatar-emoji {
+    font-size: 4rem;
+    filter: drop-shadow(0 0 20px rgba(100, 108, 255, 0.5));
+}
+
+.avatar-emoji.animated {
+    animation: float 3s ease-in-out infinite;
+}
+
+.avatar-hint {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.9rem;
+    font-family: 'Inter', sans-serif;
+}
+
+.avatar-error-detail {
+    color: #ff6b6b;
+    font-size: 0.8rem;
+    max-width: 80%;
+    text-align: center;
+}
+
+/* 背景光效 */
+.avatar-bg-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 80%;
+    height: 80%;
+    background: radial-gradient(circle, rgba(100, 108, 255, 0.1) 0%, transparent 70%);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* 浮动动画 */
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+/* 响应式 */
+@media (max-width: 768px) {
+    .avatar-container {
+        min-height: 250px;
+    }
+
+    .avatar-bg-glow {
+        width: 200px;
+        height: 200px;
+    }
+}
